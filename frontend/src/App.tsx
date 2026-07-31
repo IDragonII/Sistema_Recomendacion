@@ -12,7 +12,6 @@ type LLMStatus = 'groq' | 'ollama' | 'offline' | 'error'
 
 function App() {
   const [resultados, setResultados] = useState<Pelicula[]>([])
-  const [error, setError] = useState('')
   const [modalPelicula, setModalPelicula] = useState<Pelicula | null>(null)
   const [modalIndice, setModalIndice] = useState(0)
   const [modo, setModo] = useState<ModoEmbedding>('local')
@@ -30,7 +29,6 @@ function App() {
 
   const handleBuscar = async (q: string, nResultados: number) => {
     setIsTyping(true)
-    setError('')
 
     const mensajeUsuario: ChatMessage = { role: 'user', content: q }
     setMensajes(prev => [...prev, mensajeUsuario])
@@ -49,8 +47,6 @@ function App() {
         ? 'No se pudo conectar. Verifica tu conexión a internet.'
         : msg
 
-      setError(errorMsg)
-
       const mensajeError: ChatMessage = { role: 'assistant', content: `😕 ${errorMsg}` }
       setMensajes(prev => [...prev, mensajeError])
       setLlmStatus('offline')
@@ -62,7 +58,6 @@ function App() {
   const handleRestart = () => {
     setMensajes([])
     setResultados([])
-    setError('')
   }
 
   const abrirModal = (pelicula: Pelicula, indice: number) => {

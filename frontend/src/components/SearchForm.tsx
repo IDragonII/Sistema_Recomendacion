@@ -1,4 +1,4 @@
-import { useState, KeyboardEvent } from 'react'
+import { useState, type KeyboardEvent } from 'react'
 import { motion } from 'framer-motion'
 
 interface SearchFormProps {
@@ -17,7 +17,7 @@ const QUICK_REPLIES = [
 
 export function SearchForm({ onBuscar, cargando }: SearchFormProps) {
   const [consulta, setConsulta] = useState('')
-  const [nResultados, setNResultados] = useState(5)
+  const nResultados = 5
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault()

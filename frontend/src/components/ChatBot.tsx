@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { ChatMessage } from '../api/chat'
 
@@ -6,7 +6,7 @@ interface ChatBotProps {
   messages: ChatMessage[]
   isTyping: boolean
   onRestart: () => void
-  llmStatus: 'groq' | 'ollama' | 'offline'
+  llmStatus: 'groq' | 'ollama' | 'offline' | 'error'
 }
 
 export function ChatBot({ messages, isTyping, onRestart, llmStatus }: ChatBotProps) {
