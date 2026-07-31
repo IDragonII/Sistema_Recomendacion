@@ -10,6 +10,7 @@ HF_TOKEN = os.getenv("HF_TOKEN", "")
 COHERE_API_KEY = os.getenv("COHERE_API_KEY", "")
 MODEL_API = "sentence-transformers/all-MiniLM-L6-v2"
 MODEL_LOCAL = "BAAI/bge-m3"
+MODEL_FINETUNED = os.path.join(os.path.dirname(os.path.abspath(__file__)), "models", "bge-m3-finetuned")
 
 _local_model = None
 
@@ -17,9 +18,13 @@ _local_model = None
 def _get_local_model():
     global _local_model
     if _local_model is None:
-        print(f"Cargando modelo local {MODEL_LOCAL}...")
         from sentence_transformers import SentenceTransformer
-        _local_model = SentenceTransformer(MODEL_LOCAL)
+        if os.path.exists(MODEL_FINETUNED):
+            print(f"Cargando modelo fine-tuneado: {MODEL_FINETUNED}")
+            _local_model = SentenceTransformer(MODEL_FINETUNED)
+        else:
+            print(f"Cargando modelo base: {MODEL_LOCAL}")
+            _local_model = SentenceTransformer(MODEL_LOCAL)
         print("Modelo local cargado.")
     return _local_model
 
@@ -58,16 +63,18 @@ def _embed_local(texto: str) -> List[float]:
     return model.encode(texto, normalize_embeddings=True).tolist()
 
 
-def obtener_embedding(texto: str) -> List[float]:
-    if MODE == "local":
+def obtener_embedding(texto: str, modo: str = None) -> List[float]:
+    modo_effective = modo if modo else MODE
+
+    if modo_effective == "local":
         print("[LOCAL] Generando embedding...")
         return _embed_local(texto)
 
-    if MODE == "cohere":
+    if modo_effective == "cohere":
         print("[COHERE] Generando embedding...")
         return _embed_cohere([texto])[0]
 
-    if MODE == "api":
+    if modo_effective == "api":
         print("[API] Generando embedding...")
         return _embed_api(texto)
 
@@ -80,17 +87,19 @@ def obtener_embedding(texto: str) -> List[float]:
         return _embed_local(texto)
 
 
-def obtener_embeddings_batch(textos: List[str]) -> List[List[float]]:
-    if MODE == "local":
+def obtener_embeddings_batch(textos: List[str], modo: str = None) -> List[List[float]]:
+    modo_effective = modo if modo else MODE
+
+    if modo_effective == "local":
         print("[LOCAL] Generando embeddings (batch)...")
         model = _get_local_model()
         return model.encode(textos, normalize_embeddings=True).tolist()
 
-    if MODE == "cohere":
+    if modo_effective == "cohere":
         print("[COHERE] Generando embeddings (batch)...")
         return _embed_cohere(textos)
 
-    if MODE == "api":
+    if modo_effective == "api":
         print("[API] Generando embeddings (batch)...")
         return [_embed_api(t) for t in textos]
 

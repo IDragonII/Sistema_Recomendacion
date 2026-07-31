@@ -9,3 +9,5 @@ export interface RespuestaBusqueda {
   cantidad: number
   resultados: Pelicula[]
 }
+
+export type ModoEmbedding = "local" | "cohere"

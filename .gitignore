@@ -32,3 +32,7 @@ frontend/dist/
 
 # HuggingFace
 *.gguf
+
+# Fine-tuned models
+backend/models/
+backend/fine_tuning/data/

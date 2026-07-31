@@ -5,3 +5,7 @@ chromadb
 pandas
 requests
 python-dotenv
+peft
+accelerate
+datasets
+groq
